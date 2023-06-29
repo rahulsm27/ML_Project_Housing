@@ -18,7 +18,7 @@ def get_requirements_list():
 #Declaring variables for setup functions
 
 PROJECT_NAME ="housing-predictor"
-VERSION="0.0.7"
+VERSION="0.0.8"
 AUTHOR = "Rahul Mahajan"
 DESCRIPTION = "Housing project deployment"
 PACKAGES =["housing"] # not required after using find_packages
