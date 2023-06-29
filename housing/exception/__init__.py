@@ -5,7 +5,7 @@ class HousingException(Exception):
     def __init__(self, error_message:Exception, error_detail:sys):
         # erro_message will be type Exception . Exception object
         # Sys module contain details error details . Which line and while file is causing error
-
+        
         super().__init__(error_message)  ## Equivalant Exception(error_message)
         self.error_message = HousingException.get_detailed_error_message(error_message=error_message,
                                                                          error_detail=error_detail)
