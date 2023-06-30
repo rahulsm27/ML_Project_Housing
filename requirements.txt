@@ -7,9 +7,7 @@ gunicorn
 sklearn
 pandas
 PyYAML
--e .
-
-
-
+evidently
 tarfile
 six
+-e .
