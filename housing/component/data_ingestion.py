@@ -7,6 +7,7 @@ from housing.logger import logging
 import sys,os
 import pandas as pd
 import numpy as np
+import sklearn
 
 import tarfile
 from six.moves import urllib
@@ -71,7 +72,7 @@ class DataIngestion:
 
             housing_data_frame["income_cat"] = pd.cut(housing_data_frame["median_income"],
                                                       bins=[0.0,1.5,3.0,4.5,6.0,np.inf],
-                                                      lables = [1,2,3,4,5])
+                                                      labels =  [1,2,3,4,5])
             
             strat_train_set = None
             strat_test_set = None
@@ -83,7 +84,7 @@ class DataIngestion:
                 strat_test_set = housing_data_frame.loc[test_index].drop(["income_cat"],axis=1)
 
             train_file_path = os.path.join(self.data_ingestion_config.ingested_train_dir,file_name)
-            test_file_path = os.path.join(self.data_ingestion_config.ingested_test_di,file_name)
+            test_file_path = os.path.join(self.data_ingestion_config.ingested_test_dir,file_name)
 
             if strat_train_set is not None:
                 os.makedirs(self.data_ingestion_config.ingested_train_dir,exist_ok=True)

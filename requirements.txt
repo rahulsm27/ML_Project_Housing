@@ -8,3 +8,8 @@ sklearn
 pandas
 PyYAML
 -e .
+
+
+
+tarfile
+six
