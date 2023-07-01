@@ -1,13 +1,11 @@
 numpy
 markupsafe==2.0.1
 werkzeug==2.0.3
-flask
 Flask
 gunicorn
 sklearn
 pandas
 PyYAML
 evidently
-tarfile
 six
 -e .

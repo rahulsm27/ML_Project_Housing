@@ -8,16 +8,17 @@ from housing.constant import *
 from housing.exception import HousingException
 from housing.logger import logging
 
-from evidently.model_profile import Profile
-from evidently.model_profile.sections import DataDriftProfileSection
-from evidently.dashboard import Dashboard
-from evidently.dashboard.tabs import DataDriftTab
+from evidently.report import Report
+from evidently.metric_preset import DataDriftPreset, TargetDriftPreset, DataQualityPreset
+from evidently.test_suite import TestSuite
+from evidently.test_preset import DataDriftTestPreset
 
 import sys,os
 import pandas as pd
 import numpy as np
 import sklearn
 import json
+
 
 class DataValidation :
 
@@ -46,7 +47,7 @@ class DataValidation :
             is_test_file_exist = False
 
             train_file_path = self.data_ingestion_artifact.train_file_path
-            test_file_path = self.data_ingestion_config.test_file_path
+            test_file_path = self.data_ingestion_artifact.test_file_path
 
             is_train_file_exist = os.path.exists(train_file_path)
             is_test_file_exist = os.path.exists(test_file_path)
@@ -67,15 +68,15 @@ class DataValidation :
         try:
             validation_status = False
 
-            train_file_path = self.data_ingestion_artifact.train_file_path
-            test_file_path = self.data_ingestion_config.test_file_path
+            # train_file_path = self.data_ingestion_artifact.train_file_path
+            # test_file_path = self.data_ingestion_config.test_file_path
 
-            train_file_df = pd.read_csv(train_file_path)
+            # train_file_df = pd.read_csv(train_file_path)
 
-            len(train_file_df.columns)
+            # len(train_file_df.columns)
                 
-            schema_file_path = self.data_validation_config.schema_file_path
-            schema_contents = read_yaml_file(schema_file_path)
+            # schema_file_path = self.data_validation_config.schema_file_path
+            # schema_contents = read_yaml_file(schema_file_path)
 
             # Number of column
             # Check the value of ocean proximity
@@ -88,10 +89,16 @@ class DataValidation :
 
     def get_and_save_data_drift_report(self):
         try:
-            profile = Profile(sections=[ DataDriftProfileSection()])
+            logging.info("Creating data validation drift report")
+            drift_report = Report(metrics=[DataDriftPreset(), TargetDriftPreset()])
             train_df,test_df = self.get_train_and_test_df()
-            profile.calculate(train_df,test_df)
-            report= json.loads(profile.json()) 
+            drift_report.run(reference_data=train_df,current_data=test_df)
+            report= json.loads(drift_report.json()) 
+
+            report_file_path= self.data_validation_config.report_file_path
+            report_dir = os.path.dirname(report_file_path)
+
+            os.makedirs(report_dir,exist_ok=True)
             
             with open(self.data_validation_config.report_file_path,"w") as report_file:
                 json.dump(report,report_file,indent=6)
@@ -102,10 +109,16 @@ class DataValidation :
 
     def save_data_drift_report_page(self):
         try:
-            dashboard = Dashboard(tabs = [DataDriftTab()])
+            logging.info("Creating data validation drift page report")
+            report_page_file_path= self.data_validation_config.report_page_file_path
+            report_dir = os.path.dirname(report_page_file_path)
+
+            os.makedirs(report_dir,exist_ok=True)
+            data_stability = TestSuite(tests=[ DataDriftTestPreset()])
+            
             train_df,test_df = self.get_train_and_test_df()
-            dashboard.calculate(train_df,test_df)
-            dashboard.save(self.data_validation_config.report_page_file_path)
+            data_stability.run(reference_data=train_df,current_data=test_df)
+            data_stability.save_html(self.data_validation_config.report_page_file_path)
         
         
         except Exception as e:
@@ -124,6 +137,7 @@ class DataValidation :
 
     def initiate_data_validation(self)->DataValidationArtifact:
         try :
+            logging.info(f"{'='*20} Initiated Data validation {'='*20}")
             self.is_train_test_file_exists()
             self.validate_dataset_schema()
             self.is_data_dirft_found()
@@ -132,7 +146,7 @@ class DataValidation :
 
             data_validation_artifact =  DataValidationArtifact(
                 schema_file_path=self.data_validation_config.schema_file_path,
-                reprot_file_path=self.data_validation_config.report_file_path,
+                report_file_path=self.data_validation_config.report_file_path,
                 report_page_file_path=self.data_validation_config.report_page_file_path,
                 is_validated = True,
                 message="Data Valdiation performed sucessfully"
@@ -143,3 +157,6 @@ class DataValidation :
             return data_validation_artifact
         except Exception as e:
             raise HousingException(e,sys) from e
+        
+    def __del__(self):
+        logging.info(f"{'='*20} Data Validation log completed.{'='*20} \n\n")    
