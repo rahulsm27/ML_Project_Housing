@@ -4,25 +4,37 @@ import yaml
 from housing.exception import HousingException
 import os,sys
 import numpy as np
-import pandas as pd
 import dill
-from housing.constant import *  
+import pandas as pd
+from housing.constant import *
+
+
+def write_yaml_file(file_path:str,data:dict=None):
+    """
+    Create yaml file 
+    file_path: str
+    data: dict
+    """
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path,"w") as yaml_file:
+            if data is not None:
+                yaml.dump(data,yaml_file)
+    except Exception as e:
+        raise HousingException(e,sys)
 
 
 def read_yaml_file(file_path:str)->dict:
-        """
-        Reads a yaml file and returns the contents as a dictionary
-        file_path : str
-        """
+    """
+    Reads a YAML file and returns the contents as a dictionary.
+    file_path: str
+    """
+    try:
+        with open(file_path, 'rb') as yaml_file:
+            return yaml.safe_load(yaml_file)
+    except Exception as e:
+        raise HousingException(e,sys) from e
 
-        try:
-            config_info = None
-            with open(file_path,"rb") as yaml_file:
-                return yaml.safe_load(yaml_file)
-            
-        except Exception as e:
-             raise HousingException(e,sys) from e
-        
 
 def save_numpy_array_data(file_path: str, array: np.array):
     """
@@ -85,17 +97,18 @@ def load_data(file_path: str, schema_file_path: str) -> pd.DataFrame:
 
         dataframe = pd.read_csv(file_path,index_col=0)
 
-        error_message = ""
+        error_messgae = ""
 
 
         for column in dataframe.columns:
             if column in list(schema.keys()):
                 dataframe[column].astype(schema[column])
             else:
-                error_message = f"{error_messgae} \nColumn: [{column}] is not in the schema."
-        if len(error_message) > 0:
-            raise Exception(error_message)
+                error_messgae = f"{error_messgae} \nColumn: [{column}] is not in the schema."
+        if len(error_messgae) > 0:
+            raise Exception(error_messgae)
         return dataframe
 
     except Exception as e:
         raise HousingException(e,sys) from e
+    

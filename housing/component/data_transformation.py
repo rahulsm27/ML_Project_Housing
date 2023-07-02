@@ -1,6 +1,6 @@
 from housing.exception import HousingException
 from housing.logger import logging
-from housing.entity.config_entity import DataIngestionConfig,DataTrasformationConfig,DataValidationConfig
+from housing.entity.config_entity import DataIngestionConfig,DataTransformationConfig,DataValidationConfig
 from housing.entity.artifact_entity import DataIngestionArtifact,DataValidationArtifact,DataTransformationArtifact
 from housing.constant import *
 from housing.util.util import read_yaml_file,save_object,save_numpy_array_data,load_data
@@ -70,9 +70,9 @@ class FeatureGenerator(BaseEstimator, TransformerMixin):
             raise HousingException(e, sys) from e
 
 
-class DataTranformation:
+class DataTransformation:
 
-    def __init__(self,data_transformation_config : DataTrasformationConfig,
+    def __init__(self,data_transformation_config : DataTransformationConfig,
                  data_ingestion_artifact : DataIngestionArtifact,
                  data_validation_artifact : DataValidationArtifact):
         try:  
@@ -179,7 +179,7 @@ class DataTranformation:
             data_transformation_artifact = DataTransformationArtifact (
                                     is_transformed=True,
                                     message="Data Transformation successfull",
-                                    tranformed_train_file_path=transformed_test_file_path,
+                                    transformed_train_file_path=transformed_test_file_path,
                                     transformed_test_file_path=transformed_test_file_path,
                                     preprocessed_object_file_path=preprocessing_obj_file_path)
 
