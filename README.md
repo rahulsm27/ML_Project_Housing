@@ -1,7 +1,8 @@
-# ML_Project_Housing
-ML project deployment
+# House price prediction using regression techniques
 
-This projects explores the housing dataset from Kaggle to predict Sales Prices of housing using regression techniques. The focus is to build the code in modular fachion that can be deployed in a produciton environment
+This projects explores the housing dataset from Kaggle to predict Sales Prices of housing using regression techniques.
+
+The focus is to build the code in modular fachion that can be deployed in a produciton environment
 
 ## Problem Statement
 Thousands of houses are sold everyday. There are some questions every buyer asks himself like: What is the actual price that this house deserves? 
