@@ -1,11 +1,11 @@
 # ML_Project_Housing
 ML project deployment
 
-Step 1 - git clone https://github.com/rahulsm27/ML_Project_Housing.git
-Step 2 - conda create -p venv python=3.9 -y 
-Step 3 - conda activate venv/
-Step 4 - python setup.py install
+This projects explores the housing dataset from Kaggle to predict Sales Prices of housing using regression techniques. The focus is to build the code in modular fachion that can be deployed in a produciton environment
 
-install ipykernel
+## Problem Statement
+Thousands of houses are sold everyday. There are some questions every buyer asks himself like: What is the actual price that this house deserves? 
 
-pip install ipykernel
+## Solution 
+
+Use the Machine learning to find the factors that influences the prices of house and helps to predict the price accurately.
